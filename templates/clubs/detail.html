@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}{{ club.name }}{% endblock %}
+{% block content %}
+<section class="club-detail-hero mb-5">
+	{% if club.cover_image %}<img src="{{ club.cover_image.url }}" class="detail-cover" alt="{{ club.name }}">{% endif %}
+	<div class="club-detail-heading"><p class="eyebrow">RConnect club</p><h1>{{ club.name }}</h1><p class="lead mb-0">{{ club.description|default:"No description added yet." }}</p></div>
+</section>
+
+<div class="card club-contact-card mb-5"><div class="card-body"><h2 class="h5">Contact & meetings</h2><div class="row g-3 text-muted"><div class="col-md-4">{{ club.contact_email|default:"Email not added" }}</div><div class="col-md-4">{{ club.contact_phone|default:"Phone not added" }}</div><div class="col-md-4">{{ club.meeting_day|default:"Meeting day not added" }}{% if club.meeting_time %} at {{ club.meeting_time|time:"g:i A" }}{% endif %}</div></div></div></div>
+
+<section class="club-detail-section"><div class="section-heading"><div><p class="eyebrow">Celebrating the club</p><h2>Achievements</h2></div></div>
+	<div class="row g-4">{% for achievement in achievements %}<div class="col-md-6"><article class="card content-card h-100">{% if achievement.image %}<img src="{{ achievement.image.url }}" class="card-img-top club-achievement-image" alt="{{ achievement.title }}">{% endif %}<div class="card-body"><p class="card-kicker">{{ achievement.date|date:"F Y" }}</p><h3 class="h5">{{ achievement.title }}</h3><p class="text-muted mb-0">{{ achievement.description }}</p></div></article></div>{% empty %}<div class="col-12"><div class="empty">No achievements added yet.</div></div>{% endfor %}</div>
+</section>
+
+<section class="club-detail-section"><div class="section-heading"><div><p class="eyebrow">Club calendar</p><h2>Events</h2></div></div>
+	<div class="row g-4">{% for event in events %}<div class="col-md-6 col-lg-4"><article class="card content-card h-100">{% if event.poster %}<img src="{{ event.poster.url }}" class="card-img-top club-event-image" alt="{{ event.event_name }}">{% endif %}<div class="card-body"><span class="date-chip">{{ event.date|date:"M d, Y" }}</span><h3 class="h5 mt-3">{{ event.event_name }}</h3><p class="card-meta">{{ event.start_time|time:"g:i A" }} · {{ event.venue }}</p><p class="text-muted small mb-0">{{ event.organizer_name }}</p></div></article></div>{% empty %}<div class="col-12"><div class="empty">No events have been added for this club yet.</div></div>{% endfor %}</div>
+</section>
+
+<section class="club-detail-section"><div class="section-heading"><div><p class="eyebrow">Join the community</p><h2>Auditions</h2></div></div>
+	<div class="row g-4">{% for audition in auditions %}<div class="col-md-6 col-lg-4"><article class="card content-card h-100"><div class="card-body"><span class="status-chip">{{ audition.get_status_display }}</span><h3 class="h5 mt-3">{{ audition.title }}</h3><p class="card-meta">{{ audition.date|date:"M d, Y" }} · {{ audition.time|time:"g:i A" }}</p><p class="card-meta mb-0">{{ audition.venue }}</p></div></article></div>{% empty %}<div class="col-12"><div class="empty">No auditions have been added for this club yet.</div></div>{% endfor %}</div>
+</section>
+
+<section class="club-detail-section"><div class="section-heading"><div><p class="eyebrow">Moments from {{ club.name }}</p><h2>Gallery</h2></div></div>
+	{% if gallery_images %}<div class="club-gallery-grid">{% for gallery in gallery_images %}<button type="button" class="club-gallery-card" data-bs-toggle="modal" data-bs-target="#galleryModal{{ gallery.pk }}"><img src="{{ gallery.image.url }}" alt="{{ gallery.caption|default:club.name }}" loading="lazy">{% if gallery.caption %}<span>{{ gallery.caption }}</span>{% endif %}</button><div class="modal fade" id="galleryModal{{ gallery.pk }}" tabindex="-1" aria-labelledby="galleryModalLabel{{ gallery.pk }}" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content club-gallery-modal"><div class="modal-header"><h2 class="modal-title h5" id="galleryModalLabel{{ gallery.pk }}">{{ gallery.caption|default:club.name }}</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body"><img src="{{ gallery.image.url }}" alt="{{ gallery.caption|default:club.name }}"></div></div></div></div>{% endfor %}</div>{% else %}<div class="empty">No gallery images have been added for this club yet.</div>{% endif %}
+</section>
+{% endblock %}

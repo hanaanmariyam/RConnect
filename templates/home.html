@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<section class="home-carousel mb-5" aria-label="Campus highlights">
+	{% if gallery_images %}
+	<div id="galleryCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000">
+		<div class="carousel-indicators">
+			{% for gallery in gallery_images %}
+			<button type="button" data-bs-target="#galleryCarousel" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" aria-label="Slide {{ forloop.counter }}"></button>
+			{% endfor %}
+		</div>
+		<div class="carousel-inner">
+			{% for gallery in gallery_images %}
+			<div class="carousel-item {% if forloop.first %}active{% endif %}">
+				<img src="{{ gallery.image.url }}" class="d-block w-100" alt="{{ gallery.caption|default:'RConnect campus activity' }}">
+				{% if gallery.caption %}<div class="carousel-caption"><p>{{ gallery.caption }}</p></div>{% endif %}
+			</div>
+			{% endfor %}
+		</div>
+		<button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev" aria-label="Previous slide"><span class="carousel-control-prev-icon"></span></button>
+		<button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next" aria-label="Next slide"><span class="carousel-control-next-icon"></span></button>
+	</div>
+	{% else %}
+	<div class="empty carousel-empty">Gallery images uploaded by administrators will appear here.</div>
+	{% endif %}
+</section>
+
+{% if announcements %}
+<section class="announcement-bar mb-5" aria-label="Announcements">
+	<span class="announcement-label">Latest updates</span>
+	<div class="announcement-window"><div class="announcement-track">
+		{% for announcement in announcements %}<span><strong>{{ announcement.title }}</strong> {{ announcement.content|truncatewords:18 }}</span>{% endfor %}
+		{% for announcement in announcements %}<span aria-hidden="true"><strong>{{ announcement.title }}</strong> {{ announcement.content|truncatewords:18 }}</span>{% endfor %}
+	</div></div>
+</section>
+{% endif %}
+
+<section class="intro-section section-space">
+	<p class="eyebrow">RAJAGIRI COLLEGE OF SOCIAL SCIENCES</p>
+	<h1>One place for campus life.</h1>
+	<p class="intro-copy">RConnect brings students, clubs, events, auditions and achievements together in one trusted college portal. Discover what is happening on campus, find your community and take part in the activities that make student life memorable.</p>
+	<div class="d-flex flex-wrap gap-2"><a class="btn btn-success" href="{% url 'clubs:list' %}">Browse clubs</a><a class="btn btn-outline-success" href="{% url 'events:list' %}">Explore events</a></div>
+</section>
+
+<section class="section-space"><div class="section-heading"><div><p class="eyebrow">Celebrating our community</p><h2>Achievements</h2></div></div>
+	{% if achievements %}<div id="achievementCarousel" class="carousel slide achievement-carousel" data-bs-ride="carousel" data-bs-interval="3000">
+		<div class="carousel-indicators">
+			{% for achievement in achievements %}<button type="button" data-bs-target="#achievementCarousel" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" aria-label="Show achievement {{ forloop.counter }}"></button>{% endfor %}
+		</div>
+		<div class="carousel-inner">
+			{% for achievement in achievements %}<div class="carousel-item {% if forloop.first %}active{% endif %}">
+				<article class="achievement-slide card">
+					<div class="achievement-media">{% if achievement.image %}<img src="{{ achievement.image.url }}" alt="{{ achievement.title }}">{% else %}<div class="achievement-placeholder" aria-label="No image available"><span>Achievement</span></div>{% endif %}</div>
+					<div class="achievement-details"><p class="card-kicker">{{ achievement.date|date:"F Y" }}</p><h3>{{ achievement.title }}</h3><p class="achievement-description">{{ achievement.description }}</p><p class="achievement-club"><span>Club</span>{{ achievement.club.name }}</p></div>
+				</article>
+			</div>{% endfor %}
+		</div>
+		<button class="carousel-control-prev achievement-control" type="button" data-bs-target="#achievementCarousel" data-bs-slide="prev" aria-label="Previous achievement"><span class="carousel-control-prev-icon"></span></button>
+		<button class="carousel-control-next achievement-control" type="button" data-bs-target="#achievementCarousel" data-bs-slide="next" aria-label="Next achievement"><span class="carousel-control-next-icon"></span></button>
+	</div>{% else %}<div class="empty">No achievements have been added yet.</div>{% endif %}
+</section>
+
+<section class="section-space"><div class="section-heading"><div><p class="eyebrow">What's happening next</p><h2>Upcoming events</h2></div><a href="{% url 'events:list' %}" class="section-link">View all events</a></div>
+	<div class="row g-4">{% for event in events %}<div class="col-md-6 col-lg-4"><article class="card content-card h-100">{% if event.poster %}<img src="{{ event.poster.url }}" class="card-img-top event-image" alt="{{ event.event_name }}">{% endif %}<div class="card-body"><span class="date-chip">{{ event.date|date:"M d" }}</span><h3 class="h5 mt-3">{{ event.event_name }}</h3><p class="card-meta">{{ event.start_time|time:"g:i A" }} · {{ event.venue }}</p><p class="text-muted small mb-0">{{ event.organizer_name }}</p><a href="{% url 'events:detail' event.pk %}" class="stretched-link" aria-label="View {{ event.event_name }}"></a></div></article></div>{% empty %}<div class="col-12"><div class="empty">No upcoming events at the moment.</div></div>{% endfor %}</div>
+</section>
+
+<section class="section-space"><div class="section-heading"><div><p class="eyebrow">Find your stage</p><h2>Open auditions</h2></div><a href="{% url 'auditions:list' %}" class="section-link">View all auditions</a></div>
+	<div class="row g-4">{% for audition in auditions %}<div class="col-md-6 col-lg-4"><article class="card content-card h-100"><div class="card-body"><span class="status-chip">Open</span><h3 class="h5 mt-3">{{ audition.title }}</h3><p class="card-meta">{{ audition.date|date:"M d, Y" }} · {{ audition.time|time:"g:i A" }}</p><p class="card-meta mb-2">{{ audition.venue }}</p><p class="text-muted small mb-0">{{ audition.club.name }}</p><a href="{% url 'auditions:detail' audition.pk %}" class="stretched-link" aria-label="View {{ audition.title }} audition"></a></div></article></div>{% empty %}<div class="col-12"><div class="empty">No open auditions at the moment.</div></div>{% endfor %}</div>
+</section>
+
+<section class="section-space"><div class="section-heading"><div><p class="eyebrow">Moments from campus</p><h2>Gallery</h2></div></div>
+	{% if gallery_images %}<div class="gallery-grid">{% for gallery in gallery_images %}<figure class="gallery-item"><img src="{{ gallery.image.url }}" alt="{{ gallery.caption|default:'RConnect campus activity' }}">{% if gallery.caption %}<figcaption>{{ gallery.caption }}</figcaption>{% endif %}</figure>{% endfor %}</div>{% else %}<div class="empty">No gallery images have been added yet.</div>{% endif %}
+</section>
+{% endblock %}

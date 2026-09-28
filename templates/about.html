@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block title %}About{% endblock %}{% block content %}
+<h1>About RConnect</h1><p>RConnect is a college club management platform for discovering clubs, participating in auditions and events, receiving notifications, and tracking student activities.</p>
+<div class="row g-3 mt-3">{% for item in "Discover student clubs,Participate in campus activities,Apply for auditions,Register for events,Track achievements,Stay updated"|make_list %}{% endfor %}</div>
+{% endblock %}

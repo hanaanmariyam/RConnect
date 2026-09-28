@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block title %}My Club{% endblock %}{% block content %}<h1>My Club: {{ club.name }}</h1><div class="form-card wide"><form method="post" enctype="multipart/form-data">{% csrf_token %}{{ form.as_p }}<button class="btn btn-success">Save Club</button></form></div>{% endblock %}

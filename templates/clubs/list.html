@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Clubs{% endblock %}
+{% block content %}
+<div class="clubs-page">
+	<section class="clubs-intro">
+		<p class="eyebrow">Find your community</p>
+		<h1>Explore Our Clubs</h1>
+		<p>Discover communities, explore your interests, and connect with fellow students.</p>
+	</section>
+
+	{% if clubs %}
+	<div class="clubs-toolbar">
+		<label class="clubs-search" for="clubSearch"><span class="club-search-icon" aria-hidden="true"></span><input id="clubSearch" type="search" placeholder="Search clubs..." autocomplete="off"></label>
+		<span class="clubs-count" aria-live="polite">{{ clubs|length }} clubs</span>
+	</div>
+	<div class="row g-4 clubs-grid" id="clubsGrid">
+		{% for club in clubs %}<div class="col-md-6 col-lg-4 club-result" data-club-name="{{ club.name|lower }}">
+			<article class="club-list-card card h-100">
+				<div class="club-list-media">{% if club.cover_image %}<img src="{{ club.cover_image.url }}" alt="{{ club.name }}" loading="lazy">{% else %}<div class="club-image-placeholder" aria-label="No image available"><span>{{ club.name|first }}</span></div>{% endif %}</div>
+				<div class="club-list-body"><h2>{{ club.name }}</h2><p>{{ club.description|truncatewords:30|default:"No description added yet." }}</p><a class="btn btn-outline-success club-view-button" href="{% url 'clubs:detail' club.pk %}">View Club</a></div>
+			</article>
+		</div>{% endfor %}
+	</div>
+	<div class="empty clubs-no-results" id="clubsNoResults" hidden>No clubs match your search.</div>
+	{% else %}<div class="empty clubs-empty">No clubs available yet.</div>{% endif %}
+</div>
+{% endblock %}
